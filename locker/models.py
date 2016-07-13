@@ -20,7 +20,7 @@ class Locker(models.Model):
         (PENDING, 'Pending for confirm'),
     )
 	lockerid = models.CharField(max_length=50)
-	group = models.ForeignKey('Group' ,related_name='locker_list')
+	group = models.ForeignKey('Group' ,related_name='locker_list',blank=True,null=True)
 	port_total =  models.IntegerField(default=12)
 	description = models.CharField(max_length=255)
 	created_date = models.DateTimeField(auto_now_add=True)

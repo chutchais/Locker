@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from locker import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^(?P<lockerid>\w+)/UPDATE/', views.update_locker_status,name="update_locker_status"),
 ]
