@@ -19,10 +19,10 @@ class Locker(models.Model):
         (USED, 'On using'),
         (PENDING, 'Pending for confirm'),
     )
-	lockerid = models.CharField(max_length=50)
+	lockerid = models.CharField(primary_key=True,max_length=50)
 	group = models.ForeignKey('Group' ,related_name='locker_list',blank=True,null=True)
 	port_total =  models.IntegerField(default=12)
-	description = models.CharField(max_length=255)
+	description = models.CharField(max_length=255,blank=True, null=True)
 	created_date = models.DateTimeField(auto_now_add=True)
 	modified_date = models.DateTimeField(blank=True, null=True,auto_now=True)
 	user = models.ForeignKey('auth.User',blank=True,null=True)
@@ -64,18 +64,21 @@ class Tag(models.Model):
 	USED = 'USED'
 	PENDING = 'PENDING'
 	RESERVED = 'RESERVED'
+	AVAILABLE = 'AVAILABLE'
 	STATUS_CHOICES = (
         (USED, 'In using'),
         (PENDING, 'Pending for confirm'),
         (RESERVED, 'Reserved for tag'),
+        (AVAILABLE, 'Available'),
     )
 
-	tagid = models.CharField(max_length=100)
+	tagid = models.CharField(primary_key=True,max_length=100)
 	tagtype = models.CharField(max_length=50,choices=TAGTYPE_CHOICES,default=USR)
-	group = models.CharField(max_length=50)
-	description = models.CharField(max_length=255)
+	group = models.CharField(max_length=50,blank=True, null=True)
+	description = models.CharField(max_length=255,blank=True, null=True)
 	created_date = models.DateTimeField(auto_now_add=True)
 	modified_date = models.DateTimeField(blank=True, null=True,auto_now=True)
+	lockerport = models.ForeignKey('LockerPort' ,related_name='tag_used',blank=True, null=True)
 	user = models.ForeignKey('auth.User',blank=True,null=True)
 	actived = models.BooleanField(default=False) #Used/Not used
 	status = models.CharField(max_length=50,choices=STATUS_CHOICES,default=PENDING)
@@ -87,7 +90,7 @@ class Tag(models.Model):
 class ReserveLocker(models.Model):
 	tagid = models.ForeignKey('Tag' ,related_name='reserved_tag_list')
 	lockerport = models.ForeignKey('LockerPort' ,related_name='reserved_lockerport_list')
-	description = models.CharField(max_length=255)
+	description = models.CharField(max_length=255,blank=True, null=True)
 	created_date = models.DateTimeField(auto_now_add=True)
 	modified_date = models.DateTimeField(blank=True, null=True,auto_now=True)
 	user = models.ForeignKey('auth.User',blank=True,null=True)

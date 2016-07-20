@@ -35,14 +35,18 @@ class LockerAdmin(admin.ModelAdmin):
 admin.site.register(Locker,LockerAdmin)
 
 
+class TagReserveInline(admin.TabularInline):
+    model = ReserveLocker
+    extra = 1
 
 class TagAdmin(admin.ModelAdmin):
     search_fields = ['tagid']
     list_filter = ['tagid','tagtype','group']
-    list_display = ('tagid','tagtype','group','description','actived','status')
+    list_display = ('tagid','tagtype','lockerport','group','description','actived','status')
     fieldsets = [
-        (None,               {'fields': ['tagid','tagtype','group','description','actived','status']}),
+        (None,               {'fields': ['tagid','tagtype','lockerport','group','description','actived','status']}),
     ]
+    inlines = [TagReserveInline]
 
 admin.site.register(Tag,TagAdmin)
 

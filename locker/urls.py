@@ -20,4 +20,8 @@ from locker import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^(?P<lockerid>\w+)/UPDATE/', views.update_locker_status,name="update_locker_status"),
+    url(r'^(?P<lockerid>\w+)/STATUS/', views.get_locker_status,name="get_locker_status"),
+    url(r'^TAG/(?P<tagid>\w+)/STATUS/', views.get_tag_status,name="get_tag_status"),
+    url(r'^TAG/(?P<tagid>\w+)/REGISTER/', views.register_tag,name="register_tag"),
+    url(r'^TAG/(?P<tagid>\w+)/RESERVE/(?P<lockerid>\w+)/(?P<portid>\w+)', views.reserve_tag,name="reserve_tag"),
 ]
