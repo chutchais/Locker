@@ -49,3 +49,4 @@ Temporary Items
 *.py
 locker/__pycache__/admin.cpython-35.pyc
 *.pyc
+*.pyc

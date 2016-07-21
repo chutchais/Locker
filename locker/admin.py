@@ -41,7 +41,7 @@ class TagReserveInline(admin.TabularInline):
 
 class TagAdmin(admin.ModelAdmin):
     search_fields = ['tagid']
-    list_filter = ['tagid','tagtype','group']
+    list_filter = ['lockerport__lockerid__lockerid','tagtype','group']
     list_display = ('tagid','tagtype','lockerport','group','description','actived','status')
     fieldsets = [
         (None,               {'fields': ['tagid','tagtype','lockerport','group','description','actived','status']}),
