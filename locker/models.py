@@ -127,3 +127,18 @@ class ReserveLocker(models.Model):
 
 	def __str__(self):
 		return ("Tag %s on %s" % (self.tagid,self.lockerport))
+
+class Tracking(models.Model):
+	USED = 'USED'
+	CLOSED = 'CLOSED'
+	STATUS_CHOICES =((USED, 'On using'),(CLOSED, 'Closed'))
+	lockerport= models.ForeignKey('LockerPort',related_name='tracking_list',blank=True,null=True)
+	tag_start = models.ForeignKey('Tag',related_name='tracking_start_list',blank=True,null=True)
+	tag_stop = models.ForeignKey('Tag',related_name='tracking_stop_list',blank=True,null=True)
+	created_date = models.DateTimeField(auto_now_add=True)
+	modified_date = models.DateTimeField(blank=True, null=True,auto_now=True)
+	status = models.CharField(max_length=50,choices=STATUS_CHOICES,default=USED)
+	def __str__(self):
+		return ("Tracking %s on %s" % (self.tag_start,self.lockerport))
+
+

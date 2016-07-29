@@ -6,6 +6,7 @@ from .models import Tag
 from .models import Locker
 from .models import LockerPort
 from .models import ReserveLocker
+from .models import Tracking
 
 
 class GroupAdmin(admin.ModelAdmin):
@@ -71,8 +72,10 @@ class TagReserveInline(admin.TabularInline):
 def clear_reserve(self, request, queryset):
     #queryset.update(status='USED')
     for obj in queryset:
-    	obj.lockerport = None
-    	obj.save()
+        #Clear tracking
+        close_ticket (obj.lockerport)
+        obj.lockerport = None
+        obj.save()
 
     self.message_user(request, "%s successfully clear reserver for all Tag." % obj.tagid)
 clear_reserve.short_description = "Clear Locker reservation"
@@ -84,6 +87,7 @@ class TagAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,               {'fields': ['tagid','tagtype','lockerport','group','description','actived','status']}),
     ]
+    order_fields ='tagid'
     inlines = [TagReserveInline]
     actions =[clear_reserve]
 
@@ -93,14 +97,25 @@ admin.site.register(Tag,TagAdmin)
 def clear_port(self, request, queryset):
     #queryset.update(status='USED')
     for obj in queryset:
-    	print (obj.tag_used.lockerport)
-    	obj.tag_used.lockerport = None
+        print (obj)
+        #Clear tracking
+        close_ticket (obj)
+        obj.tag_used.lockerport = None
     	#TODO--Need to find the way to update Tag
     	#obj.save()
 
     self.message_user(request, "%s successfully create Locker ports." % obj.portid)
 clear_port.short_description = "Clear locker ports"
 
+def close_ticket(lockerport):
+    try:
+        print (lockerport)
+        t=Tracking.objects.get(lockerport=lockerport,status='USED')
+        if t:
+            t.status ='CLOSED'
+            t.save()
+    except t.DoesNotExist:
+        pass
 
 class LockerPortAdmin(admin.ModelAdmin):
 	search_fields = ['portid']
@@ -126,13 +141,30 @@ admin.site.register(LockerPort,LockerPortAdmin)
 
 
 
-class ReserveLockerAdmin(admin.ModelAdmin):
-    search_fields = ['tagid']
-    list_filter = ['tagid']
-    list_display = ('tagid','lockerport','description')
+class TrackingAdmin(admin.ModelAdmin):
+    search_fields = ['tag_start__tagid','tag_stop__tagid']
+    list_filter = ['lockerport__lockerid','status']
+    list_display = ('tag_start','lockerport','created_date','tag_stop','modified_date','closed_mode','status')
     fieldsets = [
-        (None,               {'fields': ['tagid','lockerport','description','user']}),
+        (None,               {'fields': ['tag_start','lockerport']}),
     ]
 
-admin.site.register(ReserveLocker)
+    def closed_mode(self,obj):
+        if obj.tag_stop == None:
+            return "Normal"
+        else :
+            return "Normal" if obj.tag_start == obj.tag_stop else "Admin"
+
+admin.site.register(Tracking,TrackingAdmin)
+
+
+# class ReserveLockerAdmin(admin.ModelAdmin):
+#     search_fields = ['tagid']
+#     list_filter = ['tagid']
+#     list_display = ('tagid','lockerport','description')
+#     fieldsets = [
+#         (None,               {'fields': ['tagid','lockerport','description','user']}),
+#     ]
+
+# admin.site.register(ReserveLocker)
 
