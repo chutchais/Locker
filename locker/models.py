@@ -32,6 +32,14 @@ class Locker(models.Model):
 	def __str__(self):
 		return self.lockerid
 
+	def port_count(self):
+		return self.lockerport_list.count()
+	port_count.short_description="Total Port"
+
+	def on_used(self):
+		return self.lockerport_list.filter(status='USED').count()
+	on_used.short_description="On used"
+
 
 class LockerPort(models.Model):
 	USED = 'USED'
@@ -54,6 +62,7 @@ class LockerPort(models.Model):
 		return ("Port %s on %s" % (self.portid,self.lockerid))
 
 
+
 class Tag(models.Model):
 	USR = 'USER'
 	ADMIN = 'ADMIN'
@@ -66,7 +75,7 @@ class Tag(models.Model):
 	RESERVED = 'RESERVED'
 	AVAILABLE = 'AVAILABLE'
 	STATUS_CHOICES = (
-        (USED, 'In using'),
+        (USED, 'On using'),
         (PENDING, 'Pending for confirm'),
         (RESERVED, 'Reserved for tag'),
         (AVAILABLE, 'Available'),
@@ -78,13 +87,34 @@ class Tag(models.Model):
 	description = models.CharField(max_length=255,blank=True, null=True)
 	created_date = models.DateTimeField(auto_now_add=True)
 	modified_date = models.DateTimeField(blank=True, null=True,auto_now=True)
-	lockerport = models.ForeignKey('LockerPort' ,related_name='tag_used',blank=True, null=True)
+	lockerport = models.OneToOneField('LockerPort' ,related_name='tag_used',blank=True,null=True)#,on_delete=models.CASCADE
+	#lockerport = models.ForeignKey('LockerPort' ,related_name='tag_used',blank=True, null=True)
 	user = models.ForeignKey('auth.User',blank=True,null=True)
 	actived = models.BooleanField(default=False) #Used/Not used
 	status = models.CharField(max_length=50,choices=STATUS_CHOICES,default=PENDING)
 
 	def __str__(self):
 		return self.tagid
+
+	#custom save model
+	def save(self, *args, **kwargs):
+		print (self._state.adding)
+		if not self._state.adding:
+			old = self.__class__.objects.get(pk=self._get_pk_val())
+			previouslockerport= old.lockerport
+			print (previouslockerport)
+			if previouslockerport :
+				previouslockerport.status='AVAILABLE'
+				previouslockerport.save()
+
+			if self.lockerport :
+				self.status='USED'
+				self.lockerport.status='USED'
+				self.lockerport.save()
+			else:
+				self.status='AVAILABLE'
+
+		super(Tag, self).save(*args, **kwargs)
 
 
 class ReserveLocker(models.Model):
