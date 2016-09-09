@@ -20,6 +20,7 @@ from locker import views
 urlpatterns = [
     url(r'^', views.index,name="index"),
     url(r'^admin/', admin.site.urls),
+    url(r'^test/', views.admin_page,name="admin_page"),
     url(r'^LOCKER/(?P<lockerid>\w+)/UPDATE/', views.update_locker_status,name="update_locker_status"),
     url(r'^LOCKER/(?P<lockerid>\w+)/STATUS/', views.get_locker_status,name="get_locker_status"),
     url(r'^TAG/(?P<tagid>\w+)/STATUS/', views.get_tag_status,name="get_tag_status"),
