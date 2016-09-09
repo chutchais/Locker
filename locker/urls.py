@@ -18,7 +18,7 @@ from django.contrib import admin
 from locker import views
 
 urlpatterns = [
-    url(r'^', views.index,name="index"),
+    #url(r'^', views.index,name="index"),
     url(r'^admin/', admin.site.urls),
     url(r'^test/', views.admin_page,name="admin_page"),
     url(r'^LOCKER/(?P<lockerid>\w+)/UPDATE/', views.update_locker_status,name="update_locker_status"),
@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^TAG/(?P<tagid>\w+)/CLEAR/', views.clear_tag,name="clear_tag"),
     url(r'^TAG/(?P<tagid>\w+)/RESERVE/(?P<lockerid>\w+)/(?P<portid>\w+)', views.reserve_locker,name="reserve_locker"),
     url(r'^LOCKER/(?P<lockerid>\w+)/(?P<portid>\w+)/CLEAR/', views.clear_locker,name="clear_locker"),
+    url(r'^', views.index,name="index"),
 ]
