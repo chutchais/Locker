@@ -18,14 +18,15 @@ echo "Updating all existing packages...\n"
 sudo apt-get -y update
 sudo apt-get -y upgrade
 
+
+#sudo apt-get -t jessie-backports install gunicorn
+
 echo "\n"
 
-echo "Install Vim \n"
-sudo apt-get install git
-sudo apt-get install vim
-sudo apt-get install lynx
-sudo apt-get install supervisor
-sudo apt-get -t jessie-backports install gunicorn
+#sudo apt-get install vim
+
+
+
 
 #echo "You'll be asked to enter a password for the database, don't forget it! \n"
 #sudo apt-get install -y --force-yes mysql-server 
@@ -39,12 +40,36 @@ echo "\n"
 echo "Installing some essential stuff...\n"
 echo "Installing python essentials\n"
 sudo apt-get install -y build-essential python-dev
-sudo apt-get install -y python-pip
+
+sudo apt-get install git
+sudo apt-get install lynx
+sudo apt-get install supervisor
+sudo apt-get install lynx
+sudo apt-get install supervisor
+
+#sudo apt-get install -y python-pip
+wget http://bootstrap.pypa.io/get_pip.py
+sudo python get-pip.py
+sudo rm -rf get-pip.py
 sudo apt-get install -y openssh-server
 #sudo apt-get install -y --force-yes python-mysqldb libmysqlclient-dev 
 
 echo "Install Virtual Environment"
 sudo pip install virtualenv
+echo "\n"
+
+#Create user/group
+#homeauto_django
+echo "Create User/Group for Locker project"
+sudo mkdir /webapps/homelocker
+sudo groupadd --system webapps
+sudo useradd --system --gid webapps --shell /bin/bash --home /webapps/homelocker locker
+sudo chown -R locker:users /webapps/homelocker
+sudo chmod -R g+w /webapps/homelocker
+
+
+
+
 
 echo "Now we're going to install django and any other packages\n"
 #sudo pip install django
