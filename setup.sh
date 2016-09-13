@@ -41,14 +41,13 @@ echo "Installing some essential stuff...\n"
 echo "Installing python essentials\n"
 sudo apt-get install -y build-essential python-dev
 
-sudo apt-get install git
-sudo apt-get install lynx
-sudo apt-get install supervisor
-sudo apt-get install lynx
-sudo apt-get install supervisor
+sudo apt-get install -y git
+sudo apt-get install -y lynx
+sudo apt-get install -y supervisor
+
 
 #sudo apt-get install -y python-pip
-wget http://bootstrap.pypa.io/get_pip.py
+wget https://bootstrap.pypa.io/get-pip.py
 sudo python get-pip.py
 sudo rm -rf get-pip.py
 sudo apt-get install -y openssh-server
@@ -61,15 +60,31 @@ echo "\n"
 #Create user/group
 #homeauto_django
 echo "Create User/Group for Locker project"
+sudo mkdir /webapps
 sudo mkdir /webapps/homelocker
 sudo groupadd --system webapps
 sudo useradd --system --gid webapps --shell /bin/bash --home /webapps/homelocker locker
 sudo chown -R locker:users /webapps/homelocker
 sudo chmod -R g+w /webapps/homelocker
 
+echo "Create Virtual Host"
+sudo su - locker
+cd /webapps/homelocker
+virtualenv .
+source bin/activate
+git clone https://github.com/chutchais/Locker.git
+pip install -r Locker/requirements.txt
 
+rm -rf Locker/locker/migration
+python manage.py makemigrations locker
+python manage.py migrate
+python manage.py createsuperuser
+#Put password
 
-
+#Back to Root user.
+su pi
+sudo pip install setproctitle
+sudo aptitude install supervisor
 
 echo "Now we're going to install django and any other packages\n"
 #sudo pip install django
