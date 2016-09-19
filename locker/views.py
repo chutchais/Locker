@@ -66,7 +66,7 @@ def get_tag_status(request,tagid):
 				data ={"accept": True,"tagid": tagid,"tagtype":tag.tagtype,"lockerid":"","portid":"","message": "Tag is ready for use","status":tag.status}
 			return Response(data)
 		except Tag.DoesNotExist :
-			data ={"accept": False,"tagid": tagid,"message": "Tag doesn't exist in system"}
+			data ={"accept": False,"tagid": tagid,"message": ("Tag %s doesn't exist in system" % tagid)}
 			return Response(data)
 
 
