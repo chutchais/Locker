@@ -54,3 +54,4 @@ locker/__pycache__/admin.cpython-35.pyc
 *.pyc
 *.pyc
 locker/__pycache__/urls.cpython-35.pyc
+db.sqlite3
