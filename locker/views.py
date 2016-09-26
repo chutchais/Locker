@@ -11,6 +11,8 @@ from .serializers import LockerSerializer
 
 from .models import Tracking
 
+#make change on auto-add-tag
+
 # Create your views here.
 def index(request):
 	context ={
