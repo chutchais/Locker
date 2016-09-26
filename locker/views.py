@@ -11,8 +11,6 @@ from .serializers import LockerSerializer
 
 from .models import Tracking
 
-#make change on auto-add-tag
-
 # Create your views here.
 def index(request):
 	context ={
@@ -58,16 +56,37 @@ def get_locker_status(request,lockerid):
 def get_tag_status(request,tagid):
 	if request.method == 'GET':
 		#lockerPort = LockerPort.objects.filter(lockerid__lockerid=lockerid)
+		data=""
 		try:
 			#check Tag
 			tag = Tag.objects.get(tagid=tagid)
 			if tag.lockerport:
 				data ={"accept": False ,"tagid": tagid,"tagtype":tag.tagtype,"lockerid":tag.lockerport.lockerid.lockerid,"portid":tag.lockerport.portid,
 				"message": "On using","status":tag.status}
-			else :
-				data ={"accept": True,"tagid": tagid,"tagtype":tag.tagtype,"lockerid":"","portid":"","message": "Tag is ready for use","status":tag.status}
+			elif tag.status =='PENDING':
+				tag.scan_count=tag.scan_count+1
+				tag.status='AVAILABLE' if tag.scan_count>=4 else tag.status
+				tag.actived=True if tag.scan_count>=4 else tag.actived
+				tag.save()
+				if tag.scan_count>=4 :
+					data ={"accept": True,"tagid": tagid,"tagtype":tag.tagtype,"lockerid":"","portid":"",
+					"message": ("Tag %s is ready for use" % tagid),"status":tag.status}
+				else:
+					data ={"accept": False,"tagid": tagid,"tagtype":tag.tagtype,"lockerid":"","portid":"",
+					"message": ("Tag %s is pending (%s)" % (tagid,tag.scan_count)),"status":tag.status}
+			elif tag.status =='AVAILABLE' or tag.status =='USED':
+				data ={"accept": True,"tagid": tagid,"tagtype":tag.tagtype,"lockerid":"","portid":"",
+					"message": ("Tag %s is ready for use" % tagid),"status":tag.status}
+
 			return Response(data)
+
 		except Tag.DoesNotExist :
+			#Auto Add Tag -- Add by Chutchai on Sep 26,2016
+			tag,created = Tag.objects.get_or_create(tagid=tagid)
+
+			#print (tag.scan_count)
+			#tag.scan_count= tag.scan_count+1
+			#tag.save()
 			data ={"accept": False,"tagid": tagid,"message": ("Tag %s doesn't exist in system" % tagid)}
 			return Response(data)
 
