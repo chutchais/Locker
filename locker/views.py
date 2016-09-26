@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-#Test branch auto-add-tag
->>>>>>> auto-add-tag
 from rest_framework import status
 from django.shortcuts import render
 from rest_framework.decorators import api_view
