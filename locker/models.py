@@ -92,6 +92,7 @@ class Tag(models.Model):
 	user = models.ForeignKey('auth.User',blank=True,null=True)
 	actived = models.BooleanField(default=False) #Used/Not used
 	status = models.CharField(max_length=50,choices=STATUS_CHOICES,default=PENDING)
+	scan_count = models.IntegerField(default=0)
 
 	def __str__(self):
 		return self.tagid
@@ -112,7 +113,7 @@ class Tag(models.Model):
 				self.lockerport.status='USED'
 				self.lockerport.save()
 			else:
-				self.status='AVAILABLE'
+				self.status='AVAILABLE' if self.status=='USED' else self.status
 
 		super(Tag, self).save(*args, **kwargs)
 
