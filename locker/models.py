@@ -29,6 +29,7 @@ class Locker(models.Model):
 	actived = models.BooleanField(default=False) #Used/Not used
 	status = models.CharField(max_length=50,choices=STATUS_CHOICES,default=PENDING)
 
+
 	def __str__(self):
 		return self.lockerid
 
@@ -61,6 +62,9 @@ class LockerPort(models.Model):
 	def __str__(self):
 		return ("Port %s on %s" % (self.portid,self.lockerid))
 
+	def reserved(self):
+		return self.reserved_lockerport_list.count()
+
 
 
 class Tag(models.Model):
@@ -82,6 +86,7 @@ class Tag(models.Model):
     )
 
 	tagid = models.CharField(primary_key=True,max_length=100)
+	tag_label =  models.CharField(max_length=50,blank=True, null=True)
 	tagtype = models.CharField(max_length=50,choices=TAGTYPE_CHOICES,default=USR)
 	group = models.CharField(max_length=50,blank=True, null=True)
 	description = models.CharField(max_length=255,blank=True, null=True)
@@ -96,13 +101,17 @@ class Tag(models.Model):
 	def __str__(self):
 		return self.tagid
 
+	def reserved(self):
+		return self.reserved_tag_list.count()
+
+
 	#custom save model
 	def save(self, *args, **kwargs):
-		print (self._state.adding)
+		#print (self._state.adding)
 		if not self._state.adding:
 			old = self.__class__.objects.get(pk=self._get_pk_val())
 			previouslockerport= old.lockerport
-			print (previouslockerport)
+			#print (previouslockerport)
 			if previouslockerport :
 				previouslockerport.status='AVAILABLE'
 				previouslockerport.save()
@@ -128,6 +137,26 @@ class ReserveLocker(models.Model):
 	def __str__(self):
 		return ("Tag %s on %s" % (self.tagid,self.lockerport))
 
+	#custom save model
+	def save(self, *args, **kwargs):
+		print ('Reserved')
+		if self._state.adding:
+			self.lockerport.status='RESERVED'
+			#import LockerPort
+			#lp = LockerPort.objects.get(lockerportid__id='')
+			self.lockerport.save()
+			print (self.lockerport.status)
+
+		super(ReserveLocker, self).save(*args, **kwargs)
+
+	def delete(self, *args, **kwargs):
+		print ('record %s' % self.tagid.reserved_tag_list.count())
+		if self.tagid.reserved_tag_list.count()==1:
+			self.lockerport.status='AVAILABLE'
+			self.lockerport.save()
+		super(ReserveLocker, self).delete()
+
+
 class Tracking(models.Model):
 	USED = 'USED'
 	CLOSED = 'CLOSED'
@@ -138,6 +167,7 @@ class Tracking(models.Model):
 	created_date = models.DateTimeField(auto_now_add=True)
 	modified_date = models.DateTimeField(blank=True, null=True,auto_now=True)
 	status = models.CharField(max_length=50,choices=STATUS_CHOICES,default=USED)
+	
 	def __str__(self):
 		return ("Tracking %s on %s" % (self.tag_start,self.lockerport))
 

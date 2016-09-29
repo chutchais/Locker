@@ -61,11 +61,20 @@ def get_tag_status(request,tagid):
 		try:
 			#check Tag
 			tag = Tag.objects.get(tagid=tagid)
+
 			if tag.lockerport:
-				data ={"accept": False ,"tagid": tagid,"tagtype":tag.tagtype,"lockerid":tag.lockerport.lockerid.lockerid,"portid":tag.lockerport.portid,
+				data ={"accept": False ,"tagid": tagid,"tagtype":tag.tagtype,
+				"lockerid":tag.lockerport.lockerid.lockerid,"portid":tag.lockerport.portid,
 				"message": "On using","status":tag.status}
 			else :
-				data ={"accept": True,"tagid": tagid,"tagtype":tag.tagtype,"lockerid":"","portid":"","message": "Tag is ready for use","status":tag.status}
+				#check Reserved LockerPort
+				if tag.reserved_tag_list.count()>0:
+					data ={"accept": False ,"tagid": tagid,"tagtype":tag.tagtype,
+					"lockerid":tag.reserved_tag_list.get().lockerport.lockerid.lockerid,"portid":tag.reserved_tag_list.get().lockerport.portid,
+					"message": "On Reserved","status":tag.status}
+				else:
+					data ={"accept": True,"tagid": tagid,"tagtype":tag.tagtype,
+					"lockerid":"","portid":"","message": "Tag is ready for use","status":tag.status}
 			return Response(data)
 		except Tag.DoesNotExist :
 			data ={"accept": False,"tagid": tagid,"message": ("Tag %s doesn't exist in system" % tagid)}
