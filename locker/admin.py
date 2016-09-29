@@ -137,6 +137,7 @@ class LockerPortAdmin(admin.ModelAdmin):
 	]
 	actions=[clear_port]
 	emplty_value_display=''
+	inlines = [TagReserveInline]
 
 	def get_tag(self, obj):
 		return obj.tag_used #self.tag_used if hasattr(self,'tag_used') else None
@@ -172,11 +173,11 @@ admin.site.register(Tracking,TrackingAdmin)
 
 class ReserveLockerAdmin(admin.ModelAdmin):
 	search_fields = ['tagid']
-	list_filter = ['tagid']
+	list_filter = ['lockerport__lockerid__lockerid']
 	list_display = ('tagid','lockerport','description')
 	fieldsets = [
 		(None,               {'fields': ['tagid','lockerport','description','user']}),
 	]
 
-admin.site.register(ReserveLocker)
+admin.site.register(ReserveLocker,ReserveLockerAdmin)
 

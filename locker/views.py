@@ -76,9 +76,7 @@ def get_tag_status(request,tagid):
 				else:
 					data ={"accept": False,"tagid": tagid,"tagtype":tag.tagtype,"lockerid":"","portid":"",
 					"message": ("Tag %s is pending (%s)" % (tagid,tag.scan_count)),"status":tag.status}
-			elif tag.status =='AVAILABLE' or tag.status =='USED':
-				data ={"accept": True,"tagid": tagid,"tagtype":tag.tagtype,"lockerid":"","portid":"",
-					"message": ("Tag %s is ready for use" % tagid),"status":tag.status}
+
 
 			else :
 				#check Reserved LockerPort
