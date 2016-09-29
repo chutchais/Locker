@@ -82,16 +82,15 @@ clear_reserve.short_description = "Clear Locker reservation"
 
 class TagAdmin(admin.ModelAdmin):
 
-    search_fields = ['tagid']
-    list_filter = ['lockerport__lockerid__lockerid','tagtype','group']
-    list_display = ('tagid','tagtype','lockerport','group','description','actived','status','scan_count')
-    fieldsets = [
-        (None,               {'fields': ['tagid','tagtype','lockerport','group','description','actived','status','scan_count']}),
-    ]
-    order_fields ='tagid'
-    inlines = [TagReserveInline]
-    actions =[clear_reserve]
-
+	search_fields = ['tagid']
+	list_filter = ['lockerport__lockerid__lockerid','tagtype','group']
+	list_display = ('tagid','tagtype','lockerport','group','description','actived','status','scan_count')
+	fieldsets = [
+		(None,               {'fields': ['tagid','tagtype','lockerport','group','description','actived','status','scan_count']}),
+	]
+	order_fields ='tagid'
+	inlines = [TagReserveInline]
+	actions =[clear_reserve]
 	search_fields = ['tagid','tag_label']
 	list_filter = ['lockerport__lockerid__lockerid','tagtype','group']
 	list_display = ('tagid','tag_label','tagtype','lockerport','reserved','group','description','actived','status')
