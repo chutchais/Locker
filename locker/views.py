@@ -65,7 +65,6 @@ def get_tag_status(request,tagid):
 				data ={"accept": False ,"tagid": tagid,"tagtype":tag.tagtype,
 				"lockerid":tag.lockerport.lockerid.lockerid,"portid":tag.lockerport.portid,
 				"message": "On using","status":tag.status}
-<<<<<<< HEAD
 			elif tag.status =='PENDING':
 				tag.scan_count=tag.scan_count+1
 				tag.status='AVAILABLE' if tag.scan_count>=4 else tag.status
@@ -81,7 +80,6 @@ def get_tag_status(request,tagid):
 				data ={"accept": True,"tagid": tagid,"tagtype":tag.tagtype,"lockerid":"","portid":"",
 					"message": ("Tag %s is ready for use" % tagid),"status":tag.status}
 
-=======
 			else :
 				#check Reserved LockerPort
 				if tag.reserved_tag_list.count()>0:
@@ -91,7 +89,6 @@ def get_tag_status(request,tagid):
 				else:
 					data ={"accept": True,"tagid": tagid,"tagtype":tag.tagtype,
 					"lockerid":"","portid":"","message": "Tag is ready for use","status":tag.status}
->>>>>>> locker-mode
 			return Response(data)
 
 		except Tag.DoesNotExist :
