@@ -17,11 +17,11 @@ server {
     error_log /webapps/homelocker/logs/nginx-error.log;
  
     location /static/ {
-        alias   /webapps/homelocker/static/;
+        alias   /var/www/static/;
     }
  
     location /media/ {
-        alias   /webapps/homelocker/media/;
+        alias   /var/www/media/;
     }
  
     location / {
@@ -59,6 +59,6 @@ server {
     # Error pages
     error_page 500 502 503 504 /500.html;
     location = /500.html {
-        root /webapps/homelocker/static/;
+        root /var/www/static/;
     }
 }
