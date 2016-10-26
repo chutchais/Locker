@@ -1,57 +1,24 @@
-#Test git pull Sep 12,2016
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>
-# 
-# 
-
 echo "\n"
 echo "Updating all existing packages...\n"
 sudo apt-get -y update
 sudo apt-get -y upgrade
-
-
-#sudo apt-get -t jessie-backports install gunicorn
-
 echo "\n"
 
-#sudo apt-get install vim
-
-
-
-
-#echo "You'll be asked to enter a password for the database, don't forget it! \n"
-#sudo apt-get install -y --force-yes mysql-server 
-#sudo apt-get install -y --force-yes mysql-client
-#sudo apt-get install -y --force-yes apache2
-#sudo apt-get install -y --force-yes libapache2-mod-python
-# Restart apache to make sure things work
-#sudo apache2 -k restart
-
-echo "\n"
 echo "Installing some essential stuff...\n"
 echo "Installing python essentials\n"
 sudo apt-get install -y build-essential python-dev
-
 sudo apt-get install -y git
 sudo apt-get install -y lynx
 sudo apt-get install -y supervisor
+sudo apt-get install vim
 
 
-#sudo apt-get install -y python-pip
+echo "Installing Django Library\n"
 wget https://bootstrap.pypa.io/get-pip.py
 sudo python get-pip.py
 sudo rm -rf get-pip.py
 sudo apt-get install -y openssh-server
-#sudo apt-get install -y --force-yes python-mysqldb libmysqlclient-dev 
+
 
 echo "Install Virtual Environment"
 sudo pip install virtualenv
@@ -70,6 +37,7 @@ sudo chmod -R g+w /webapps/homelocker
 #change passwd
 sudo passwd locker
 #put new passwd.
+
 
 echo "Create Virtual Host"
 sudo su - locker
@@ -97,40 +65,39 @@ sudo service nginx start
 sudo service nginx stop
 sudo service nginx restart
 
-#Config supervisor
-sudo nano /etc/supervisor/conf.d/lockerauto.conf
-#Copy content from Git HUB to file
+######Config Supervisor########
+#chmod 777
+chmod 777 /webapps/homelocker/Locker/gunicorn_start
+#Copy lockerauto.conf to /etc/supervisor/conf.d/lockerauto.conf
+cp /webapps/homelocker/Locker/lockerauto.conf /etc/supervisor/conf.d/lockerauto.conf
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl status
+
 
 
 #Make media folder
 sudo mkdir /var/www /var/www/static /var/www/media
 sudo chown -R locker:users /var/www
 
+#############Setup Web Static files
 #move to  virtual locker
+su - locker
+source bin/activate
+cd Locker
 python manage.py collectstatic
 
 
-#Setup nginx
+#############Setup nginx
 cd /etc/nginx/sites-available/
-sudo nano lockerauto
+#sudo nano lockerauto
 #copy from GitHub
+cp /webapps/homelocker/Locker/lockerauto lockerauto
 cd /etc/nginx/sites-enabled
 sudo ln -s ../sites-available/lockerauto
 sudo rm default
 sudo service nginx restart
 
 
-echo "Now we're going to install django and any other packages\n"
-#sudo pip install django
-sudo pip install -r requirements.txt
-
-echo "\n"
-echo "Finally, lets make sure Django is installed properly - this will print the version number\n"
-python djangotest.py
-
-echo "\n"
-echo "Done! Locker project is ready\n"
+echo "Finish !!!!!!!! you can access to 127.0.0.1:8008"
 exit 0
