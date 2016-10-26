@@ -76,6 +76,7 @@ git clone https://github.com/chutchais/Locker.git
 pip install -r Locker/requirements.txt
 
 rm -rf Locker/locker/migration
+cd Locker
 python manage.py makemigrations locker
 python manage.py migrate
 python manage.py createsuperuser
