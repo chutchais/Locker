@@ -133,10 +133,12 @@ USE_TZ = True
 #    ),
 #)
 STATIC_URL = '/static/'
-STATIC_ROOT = '/webapps/homelocker/static'
+STATIC_ROOT = '/var/www/static'
+#STATIC_ROOT = '/webapps/homelocker/static'
 STATICFILES_DIRS = (os.path.join(os.path.dirname(__file__), 'static'), )
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+MEDIA_ROOT = '/var/www/media'
 
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
