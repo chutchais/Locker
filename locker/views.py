@@ -133,8 +133,8 @@ def reserve_locker(request,tagid,lockerid,portid):
 				lockerport.save()
 				data ={"tagid": tagid,"message": "Reserve successful","accept":True,"status":tag.status}
 				#Add tracking
-				t=Tracking(lockerport=lockerport,tag_start=tag)
-				t.save()
+				#t=Tracking(lockerport=lockerport,tag_start=tag)
+				#t.save()
 
 	except lockerport.DoesNotExist :
 		data ={"tagid": tagid,"message": "Locker Port does not exist in system","accept":False}
