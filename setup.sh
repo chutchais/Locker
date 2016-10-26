@@ -67,6 +67,9 @@ sudo groupadd --system webapps
 sudo useradd --system --gid webapps --shell /bin/bash --home /webapps/homelocker locker
 sudo chown -R locker:users /webapps/homelocker
 sudo chmod -R g+w /webapps/homelocker
+#change passwd
+sudo passwd locker
+#put new passwd.
 
 echo "Create Virtual Host"
 sudo su - locker
