@@ -62,6 +62,7 @@ echo "\n"
 echo "Create User/Group for Locker project"
 sudo mkdir /webapps
 sudo mkdir /webapps/homelocker
+sudo mkdir /webapps/homelocker/logs
 sudo groupadd --system webapps
 sudo useradd --system --gid webapps --shell /bin/bash --home /webapps/homelocker locker
 sudo chown -R locker:users /webapps/homelocker
@@ -86,6 +87,38 @@ python manage.py createsuperuser
 su pi
 sudo pip install setproctitle
 sudo aptitude install supervisor
+sudo aptitude install nginx
+
+#Test nginx
+sudo service nginx start
+sudo service nginx stop
+sudo service nginx restart
+
+#Config supervisor
+sudo nano /etc/supervisor/conf.d/lockerauto.conf
+#Copy content from Git HUB to file
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl status
+
+
+#Make media folder
+sudo mkdir /var/www /var/www/static /var/www/media
+sudo chown -R locker:users /var/www
+
+#move to  virtual locker
+python manage.py collectstatic
+
+
+#Setup nginx
+cd /etc/nginx/sites-available/
+sudo nano lockerauto
+#copy from GitHub
+cd /etc/nginx/sites-enabled
+sudo ln -s ../sites-available/lockerauto
+sudo rm default
+sudo service nginx restart
+
 
 echo "Now we're going to install django and any other packages\n"
 #sudo pip install django
